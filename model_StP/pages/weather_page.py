@@ -27,7 +27,13 @@ def load_weather_model():
     )
     
     # Путь к весам модели внутри вашей папки model_StP
-    weights_path = "weights/resnet18.pth"
+    pages_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Поднимаемся на один уровень выше — в корень папки model_StP
+    root_dir = os.path.dirname(pages_dir)
+
+# Склеиваем правильный путь к папке weights
+    weights_path = os.path.join(root_dir, "weights", "resnet18.pth")
     if os.path.exists(weights_path):
         model.load_state_dict(torch.load(weights_path, map_location="cpu"))
     else:
