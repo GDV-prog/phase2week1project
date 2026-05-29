@@ -151,7 +151,7 @@ with tab2:
         ax2.legend()
         ax2.grid(True)
         st.pyplot(fig)
-        st.info("⏱️ **Время обучения:** ~3 часа на GPU NVIDIA T4 (Google Colab)")
+        st.info("⏱️ **Время обучения:** 15 минут на GPU NVIDIA T4 (Google Colab)")
     else:
         st.warning("Файл `training_history.csv` не найден. Кривые обучения недоступны.")
 
