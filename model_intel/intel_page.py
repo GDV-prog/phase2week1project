@@ -20,7 +20,7 @@ dataset_info = {
     'train_total': 14034,
     'valid_total': 3000,
     'distribution': {'buildings': 2191, 'forest': 2271, 'glacier': 2404, 'mountain': 2512, 'sea': 2274, 'street':2382},
-    'train_time_sec': 452
+    'train_time_sec': 148
 }
 
 @st.cache_resource
@@ -29,8 +29,28 @@ def load_train_model():
     model.fc = torch.nn.Linear(model.fc.in_features, len(classes))
 
     model_path = 'resnet101_intel.pt'
+    
+    # ССЫЛКА НА ВАШ РЕЛИЗ: Вставьте сюда ссылку, которую вы скопировали с GitHub
+    URL_WEIGHTS = "https://github.com/Expat777/phase2week1project/releases/download/v0.1/resnet101_intel.pt"
+
+    # Если файла весов нет локально, Стримлит сам скачает его по ссылке
+    if not torch.os.path.exists(model_path):
+        with st.spinner("⏳ Веса модели не найдены локально. Скачиваю веса из GitHub Releases..."):
+            try:
+                response = requests.get(URL_WEIGHTS, stream=True)
+                if response.status_code == 200:
+                    with open(model_path, 'wb') as f:
+                        f.write(response.content)
+                    st.success("✅ Веса успешно скачаны и сохранены!")
+                else:
+                    st.error(f"Не удалось скачать веса. Код ошибки сервера: {response.status_code}")
+            except Exception as e:
+                st.error(f"Ошибка при автоматическом скачивании весов: {e}")
+
+    # Загружаем веса в архитектуру
     if torch.os.path.exists(model_path):
         model.load_state_dict(torch.load(model_path, map_location=device))
+        
     model = model.to(device)
     model.eval()
     return model
@@ -103,7 +123,7 @@ else:
         m1, m2, m3 = st.columns(3) 
         m1.metric("Картинок для обучения (Train)", f"{dataset_info['train_total']} шт")
         m2.metric("Картинок для валидации (Test)", f"{dataset_info['valid_total']} шт")
-        m3.metric("⏳ Общее время обучения", f"{dataset_info['train_time_sec']} сек (~7.5 мин)")
+        m3.metric("⏳ Общее время обучения", f"{dataset_info['train_time_sec']} сек (~2.5 мин)")
 
         st.subheader('Распределение объектов по классам')
         fig_dist, ax_dist = plt.subplots(figsize=(10, 3.5))
@@ -137,6 +157,7 @@ else:
             ax_acc.plot(epochs, v_acc, label='Valid Accuracy', color='green', linestyle ='--', linewidth=2)
             ax_acc.set_title('History of Accuracy')
             ax_acc.set_xlabel('Epochs')
+            ax_acc.legend()
             st.pyplot(fig_acc)
         st.write('---')
 
