@@ -1,3 +1,15 @@
+# Игнорируем папку с исходными датасетами картинок
+data/
+model_StP/data/
+
+# Игнорируем файлы весов моделей нейросетей
+*.pth
+weights/
+model_StP/weights/
+
+# Игнорируем папку виртуального окружения Python
+env/
+venv/
 # Системные файлы macOS
 .DS_Store
 .AppleDouble
