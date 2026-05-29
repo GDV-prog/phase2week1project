@@ -1,3 +1,14 @@
+import streamlit as st
+import torch
+import torchvision.models as models
+import torchvision.transforms as transforms
+from PIL import Image
+import requests
+from io import BytesIO
+import time
+import os
+
+
 @st.cache_resource
 def load_weather_model():
     # ---------- ВСТАВЛЕННЫЙ БЛОК ----------
