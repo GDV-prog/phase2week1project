@@ -47,13 +47,12 @@ else:
 
 # --- 4. 🆕 Страница Участника 4 (Классификация погоды) ---
 if weather_page_exists:
-    pages_to_load.append(st.Page("model_weather/weather_page.py", title="🌈 Классификация погоды", icon="🌦️"))
+    pages_to_load.append(st.Page("model_StP/weather_page.py", title="🌈 Классификация погоды", icon="🌦️"))
 else:
     def weather_placeholder():
         st.title("🌦️ Модуль: Классификация погоды")
-        st.info("Разработка ведется Участником 4. Страница появится сразу после пуша файла `weather_page.py` в новую папку `model_weather`.")
+        st.info("Разработка ведется Участником 4. Страница появится сразу после пуша файла `weather_page.py` в папку `model_StP`.")
     pages_to_load.append(st.Page(weather_placeholder, title="🌈 Классификация погоды (В разработке)", icon="⏳"))
-
 
 # 3. Запускаем многостраничное меню на 4 вкладки
 pg = st.navigation(pages_to_load)
