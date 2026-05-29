@@ -11,33 +11,35 @@ import os
 # --- ОБЩАЯ НАСТРОЙКА СТРАНИЦЫ ---
 st.set_page_config(page_title="Weather App (ResNet18)", page_icon="🌤️", layout="wide")
 
+# --- ОПРЕДЕЛЕНИЕ ПУТЕЙ (АБСОЛЮТНЫЕ) ---
+# Путь к папке, где лежит этот скрипт (предполагаем, что он внутри pages/)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# Корень проекта (на уровень выше, если pages/ внутри model_StP)
+ROOT_DIR = os.path.dirname(SCRIPT_DIR)
+
+# Пути к графикам (лежат в той же папке, что и скрипт, т.е. в pages/)
+LEARNING_CURVES_PATH = os.path.join(SCRIPT_DIR, "learning_curves.png")
+CONFUSION_MATRIX_PATH = os.path.join(SCRIPT_DIR, "confusion_matrix.png")
+# Путь к весам (лежат в папке weights в корне проекта)
+WEIGHTS_PATH = os.path.join(ROOT_DIR, "weights", "resnet18.pth")
+
 # --- КЭШИРОВАНИЕ И ИНИЦИАЛИЗАЦИЯ МОДЕЛИ ---
 @st.cache_resource
 def load_weather_model():
     model = models.resnet18(weights=None) 
     num_ftrs = model.fc.in_features
     
-    # Алфавитный список классов из вашего Jupyter Notebook
     classes = ['dew', 'fogsmog', 'frost', 'glaze', 'hail', 'lightning', 'rain', 'rainbow', 'rime', 'sandstorm', 'snow']
     
-    # Точная структура с Dropout, как в обученной модели
     model.fc = torch.nn.Sequential(
         torch.nn.Dropout(p=0.4),
         torch.nn.Linear(num_ftrs, len(classes))
     )
     
-    # Путь к весам модели внутри вашей папки model_StP
-    pages_dir = os.path.dirname(os.path.abspath(__file__))
-
-# Поднимаемся на один уровень выше — в корень папки model_StP
-    root_dir = os.path.dirname(pages_dir)
-
-# Склеиваем правильный путь к папке weights
-    weights_path = os.path.join(root_dir, "weights", "resnet18.pth")
-    if os.path.exists(weights_path):
-        model.load_state_dict(torch.load(weights_path, map_location="cpu"))
+    if os.path.exists(WEIGHTS_PATH):
+        model.load_state_dict(torch.load(WEIGHTS_PATH, map_location="cpu"))
     else:
-        st.sidebar.error(f"⚠️ Файл весов не найден по пути: {weights_path}")
+        st.sidebar.error(f"⚠️ Файл весов не найден по пути: {WEIGHTS_PATH}")
         
     model.eval()
     return model, classes
@@ -59,18 +61,19 @@ def load_image_from_url(url):
         st.error(f"Не удалось загрузить изображение по ссылке. Ошибка: {e}")
         return None
 
-# --- БОКОВОЕ МЕНЮ НАВИГАЦИИ (ОБЪЕДИНЕНИЕ) ---
+# --- БОКОВОЕ МЕНЮ НАВИГАЦИИ ---
 st.sidebar.title("Навигация")
 page = st.sidebar.radio(
     "Выберите раздел проекта:",
     ["Аналитика и метрики", "🌤️ Тестирование модели"]
 )
 
-# Загружаем модель один раз в фоне
+# Загружаем модель один раз (кэшируется)
 model, class_names = load_weather_model()
 
-
-
+# ====================================================================
+# РАЗДЕЛ 1: АНАЛИТИКА И МЕТРИКИ
+# ====================================================================
 if page == "Аналитика и метрики":
     st.title("Панель мониторинга и аналитики: Weather Image Recognition")
     st.write("Детальная статистика и результаты процесса обучения архитектуры ResNet18.")
@@ -92,17 +95,16 @@ if page == "Аналитика и метрики":
 
     c1, c2 = st.columns(2)
     with c1:
-        if os.path.exists("learning_curves.png"):
-            st.image("learning_curves.png", caption="Кривые потерь (Loss) и точности (Accuracy) по эпохам")
+        if os.path.exists(LEARNING_CURVES_PATH):
+            st.image(LEARNING_CURVES_PATH, caption="Кривые потерь (Loss) и точности (Accuracy) по эпохам")
         else:
-            st.warning("⚠️ Файл 'learning_curves.png' не найден. Убедитесь, что сохранили его в папку model_StP.")
+            st.warning(f"⚠️ Файл 'learning_curves.png' не найден. Ожидаемый путь: {LEARNING_CURVES_PATH}")
 
     with c2:
-        if os.path.exists("confusion_matrix.png"):
-            st.image("confusion_matrix.png", caption="Матрица ошибок (Confusion Matrix Heatmap)")
+        if os.path.exists(CONFUSION_MATRIX_PATH):
+            st.image(CONFUSION_MATRIX_PATH, caption="Матрица ошибок (Confusion Matrix Heatmap)")
         else:
-            st.warning("⚠️ Файл 'confusion_matrix.png' не найден. Убедитесь, что сохранили его в папку model_StP.")
-
+            st.warning(f"⚠️ Файл 'confusion_matrix.png' не найден. Ожидаемый путь: {CONFUSION_MATRIX_PATH}")
 
 # ====================================================================
 # РАЗДЕЛ 2: ТЕСТИРОВАНИЕ МОДЕЛИ
@@ -111,9 +113,11 @@ elif page == "🌤️ Тестирование модели":
     st.title("🌤️ Распознавание типов погоды — Проверка модели")
     st.write("Загружайте собственные изображения локально или используйте прямые ссылки для проверки качества работы нейросети.")
     
-    # Проверка статуса весов для тимлида
-    if os.path.exists("weights/resnet18.pth"):
-        st.success("Веса модели успешно инициализированы из папки `weights/`")
+    # Проверка статуса весов (теперь с абсолютным путём)
+    if os.path.exists(WEIGHTS_PATH):
+        st.success(f"Веса модели успешно загружены из `{WEIGHTS_PATH}`")
+    else:
+        st.error(f"Веса не найдены по пути: {WEIGHTS_PATH}. Проверьте структуру папок.")
     
     st.markdown("---")
     st.subheader("Загрузка данных")
