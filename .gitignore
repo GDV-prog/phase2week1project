@@ -1,24 +1,41 @@
-# Системные файлы macOS
+# Игнорируем виртуальные окружения Python
+venv/
+.venv/
+env/
+
+# Игнорируем кэш Python и конфигурации сборки
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Игнорируем папки с датасетами и архивами (для всех участников)
+**/archive/
+*.zip
+*.tar.gz
+*.rar
+
+# Игнорируем скрытые файлы системы Mac
 .DS_Store
 .AppleDouble
 .LSOverride
 
-# Настройки VS Code (если не хотите делиться своими темами/плагинами)
+# Игнорируем контрольные точки Jupyter
+.ipynb_checkpoints/
+
+# Игнорируем локальные настройки VS Code
 .vscode/
-!.vscode/extensions.json
 
-# Кэш Python и виртуальные окружения
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-conda-env/
+# --- ЧТО МЫ МОГЛИ ЗАБЫТЬ: ---
 
-# Файлы данных (если ваши модели используют тяжелые датасеты)
-*.csv
-*.json
-*.sqlite3
+# 1. Логи Streamlit и кэш развертывания
+.streamlit/config.toml
+.streamlit/secrets.toml
+
+# 2. Файлы конфигурации окружения (если будете хранить токены/пароли от Kaggle)
+.env
+.env.local
+
+# 3. Файлы временных графиков и дампы памяти (на всякий случай)
+*.log
