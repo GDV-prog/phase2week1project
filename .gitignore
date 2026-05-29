@@ -1,0 +1,24 @@
+# Системные файлы macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Настройки VS Code (если не хотите делиться своими темами/плагинами)
+.vscode/
+!.vscode/extensions.json
+
+# Кэш Python и виртуальные окружения
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+conda-env/
+
+# Файлы данных (если ваши модели используют тяжелые датасеты)
+*.csv
+*.json
+*.sqlite3
