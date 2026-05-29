@@ -49,7 +49,7 @@ else:
 
 # --- 4. 🆕 Страница Участника 4 (Классификация погоды) ---
 if weather_page_exists:
-    pages_to_load.append(st.Page("model_StP/weather_page.py", title="🌈 Классификация погоды", icon="🌦️"))
+    pages_to_load.append(st.Page("model_StP/pages/weather_page.py", title="🌈 Классификация погоды", icon="🌦️"))
 else:
     def weather_placeholder():
         st.title("🌦️ Модуль: Классификация погоды")
