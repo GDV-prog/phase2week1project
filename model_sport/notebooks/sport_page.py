@@ -20,9 +20,12 @@ st.title("🏅 Спортивная классификация и информа
 
 # ------------------- 1. Загрузка модели и вспомогательных данных -------------------
 @st.cache_resource
+
+
 def load_model_and_classes():
-    model_path = "best_model.pth"
-    class_file = "class_names.txt"
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(SCRIPT_DIR, "best_model.pth")
+    class_file = os.path.join(SCRIPT_DIR, "class_names.txt")
     if not os.path.exists(class_file):
         st.error(f"Файл {class_file} не найден. Убедитесь, что он находится в той же папке.")
         return None, None, None
@@ -132,7 +135,8 @@ with tab2:
 
     # 2.2 Кривые обучения (если есть файл)
     st.subheader("📈 Кривые обучения")
-    history_path = "training_history.csv"
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    history_path = os.path.join(SCRIPT_DIR, "training_history.csv")
     if os.path.exists(history_path):
         history_df = pd.read_csv(history_path)
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
@@ -170,7 +174,7 @@ with tab2:
 
     # 2.4 Матрица ошибок (heatmap)
     st.subheader("🔍 Матрица ошибок (Confusion Matrix)")
-    conf_path = "confusion_matrix_full.csv"
+    conf_path = os.path.join(SCRIPT_DIR, "confusion_matrix_full.csv")
     if os.path.exists(conf_path):
         conf_df = pd.read_csv(conf_path, index_col=0)
         # Нормализация по строкам для отображения долей
