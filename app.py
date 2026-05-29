@@ -28,8 +28,10 @@ else:
          st.warning("⚠️ Модуль Крови не найден")
 
 # --- 2. Страница Участника 2 (Спорт) ---
+sport_page_exists = os.path.exists("model_sport/notebooks/sport_page.py")
+
 if sport_page_exists:
-    pages_to_load.append(st.Page("model_sport/sport_page.py", title="⚽ Классификация спорта", icon="🏃‍♂️"))
+    pages_to_load.append(st.Page("model_sport/notebooks/sport_page.py", title="⚽ Классификация спорта", icon="🏃‍♂️"))
 else:
     def sport_placeholder():
         st.title("🏃‍♂️ Модуль: Классификация видов спорта")
